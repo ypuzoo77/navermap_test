@@ -10,27 +10,34 @@
         #car-info-modal {
             display: none;
             position: fixed;
-            left: 0; right: 0; bottom: 0;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
             background: #fff;
-            box-shadow: 0 -2px 16px rgba(0,0,0,0.2);
-            border-radius: 16px 16px 0 0;
-            padding: 24px 20px 32px 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+            border-radius: 16px;
+            padding: 32px 28px 32px 28px;
             z-index: 1000;
-            transition: transform 0.3s;
+            min-width: 260px;
+            min-height: 180px;
+            transition: opacity 0.2s;
         }
         #car-info-modal.active {
             display: block;
-            animation: slideUp 0.3s;
+            animation: popupFadeIn 0.2s;
         }
-        @keyframes slideUp {
-            from { transform: translateY(100%);}
-            to { transform: translateY(0);}
+        @keyframes popupFadeIn {
+            from { opacity: 0; transform: translate(-50%, -40%);}
+            to { opacity: 1; transform: translate(-50%, -50%);}
         }
         #car-info-modal .car-img {
             width: 80px;
             height: 48px;
             object-fit: contain;
             margin-bottom: 12px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
         #car-info-modal .close-btn {
             position: absolute;
@@ -45,10 +52,12 @@
             font-size: 20px;
             font-weight: bold;
             margin-bottom: 8px;
+            text-align: center;
         }
         #car-info-modal .car-detail {
             font-size: 16px;
             margin-bottom: 4px;
+            text-align: center;
         }
     </style>
 </head>
@@ -137,8 +146,8 @@ fetch('https://seoul-locations.onrender.com/locations')
         console.error('fetch 에러:', error);
     });
 
-// 모달 바깥 클릭 시 닫기
-window.addEventListener('click', function(e) {
+// 모달 바깥 클릭 시 닫기 (팝업 중앙이므로 배경 클릭 시 닫기)
+window.addEventListener('mousedown', function(e) {
     const modal = document.getElementById('car-info-modal');
     if (modal.classList.contains('active') && !modal.contains(e.target) && e.target.className !== 'close-btn') {
         closeCarInfoModal();
