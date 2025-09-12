@@ -4,48 +4,53 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-    <title>간단한 지도 표시하기</title>
+    <title>자동차 마커 표시하기</title>
     <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=vt8dqq5pyc"></script>
 </head>
 <body>
 <div id="map" style="width:100%;height:400px;"></div>
 
 <script>
-var HOME_PATH = window.HOME_PATH || '.';
+// 서버에서 내려온 데이터 예시
+var data = {
+    "locations":[
+        {"lat":37.62840412410249,"lng":126.80367110201941},
+        {"lat":37.53090465133765,"lng":127.17167960598334},
+        {"lat":37.50238981369245,"lng":126.79265791385215},
+        {"lat":37.62532853996442,"lng":127.03447007913609},
+        {"lat":37.69564750481393,"lng":126.96372098089101},
+        {"lat":37.60889460994889,"lng":127.15552032161563},
+        {"lat":37.59568898356651,"lng":126.7952004300807},
+        {"lat":37.62630112519076,"lng":126.96395564681042},
+        {"lat":37.5699459002811,"lng":127.07944913764014},
+        {"lat":37.69862767535286,"lng":126.83519257972942}
+    ]
+};
 
-var cityhall = new naver.maps.LatLng(37.3973807, 126.9622437),
-    map = new naver.maps.Map('map', {
-        center: cityhall.destinationPoint(0, 500),
-        zoom: 15
-    }),
-    marker = new naver.maps.Marker({
+// 지도 중심을 첫 번째 좌표로 설정
+var center = new naver.maps.LatLng(data.locations[0].lat, data.locations[0].lng);
+var map = new naver.maps.Map('map', {
+    center: center,
+    zoom: 12
+});
+
+// 자동차 아이콘 이미지 (네이버 기본 아이콘 예시)
+var carIcon = {
+    url: 'https://ssl.pstatic.net/static/maps/mantle/1x/marker-car.png', // 자동차 아이콘 이미지 경로
+    size: new naver.maps.Size(32, 32),
+    origin: new naver.maps.Point(0, 0),
+    anchor: new naver.maps.Point(16, 16)
+};
+
+// 각 좌표에 자동차 마커 표시
+data.locations.forEach(function(loc, idx) {
+    new naver.maps.Marker({
+        position: new naver.maps.LatLng(loc.lat, loc.lng),
         map: map,
-        position: cityhall
+        icon: carIcon,
+        title: '자동차 위치 #' + (idx + 1)
     });
-
-var contentString = [
-        '<div class="iw_inner">',
-        '   <h3>우리집</h3>',
-        '   <p>서울특별시 중구 태평로1가 31 | 서울특별시 중구 세종대로 110 서울특별시청<br />',
-        '       02-120 | 공공,사회기관 &gt; 특별,광역시청<br />',
-        '       <a href="http://www.seoul.go.kr" target="_blank">www.seoul.go.kr/</a>',
-        '   </p>',
-        '</div>'
-    ].join('');
-
-var infowindow = new naver.maps.InfoWindow({
-    content: contentString
 });
-
-naver.maps.Event.addListener(marker, "click", function(e) {
-    if (infowindow.getMap()) {
-        infowindow.close();
-    } else {
-        infowindow.open(map, marker);
-    }
-});
-
-infowindow.open(map, marker);
 </script>
 </body>
 </html>
